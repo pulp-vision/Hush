@@ -1,0 +1,20 @@
+{
+  "samples": [
+    {
+      "path": "datasets/dns4/datasets_fullband/impulse_responses/SLR26/simulated_rirs_48k/smallroom/Room093/Room093-00001.wav",
+      "duration": 1.0
+    },
+    {
+      "path": "datasets/dns4/datasets_fullband/impulse_responses/SLR26/simulated_rirs_48k/smallroom/Room093/Room093-00002.wav",
+      "duration": 1.0
+    },
+    {
+      "path": "datasets/MIT_IR/air_binaural_aula_carolina_0_1_1_90_3.wav",
+      "duration": 2.048
+    },
+    {
+      "path": "datasets/OpenAIR/st-georges-undercroft/ir_mono.wav",
+      "duration": 3.5
+    }
+  ]
+}

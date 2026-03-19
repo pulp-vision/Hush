@@ -581,8 +581,8 @@ class Loss(nn.Module):
     def __init__(
         self,
         sr: int = 16000,
-        fft_size: int = 512,
-        hop_size: int = 128,
+        fft_size: int = 320,
+        hop_size: int = 160,
         nb_erb: int = 32,
         nb_df: int = 64,
         erb_widths=None,

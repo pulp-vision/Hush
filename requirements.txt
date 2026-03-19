@@ -1,0 +1,14 @@
+torch>=2.0.0
+torchaudio>=2.0.0
+numpy>=1.24.0
+soundfile>=0.12.1
+scipy>=1.10.0
+h5py>=3.8.0
+tensorboard>=2.12.0
+
+# Optional: experiment tracking
+mlflow>=2.4.0
+
+# Optional: evaluation metrics
+pesq>=0.0.4
+pystoi>=0.3.3

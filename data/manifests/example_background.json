@@ -1,0 +1,28 @@
+{
+  "samples": [
+    {
+      "path": "datasets/LibriSpeech/train-clean-360/8842/302196/8842-302196-0000.flac",
+      "speaker_id": "libri_8842",
+      "duration": 14.23,
+      "dataset": "librispeech"
+    },
+    {
+      "path": "datasets/LibriSpeech/train-clean-360/8842/302196/8842-302196-0001.flac",
+      "speaker_id": "libri_8842",
+      "duration": 13.87,
+      "dataset": "librispeech"
+    },
+    {
+      "path": "datasets/VCTK/wav48_silence_trimmed/p376/p376_001_mic1.flac",
+      "speaker_id": "vctk_p376",
+      "duration": 3.91,
+      "dataset": "vctk"
+    },
+    {
+      "path": "datasets/VCTK/wav48_silence_trimmed/p376/p376_002_mic1.flac",
+      "speaker_id": "vctk_p376",
+      "duration": 4.55,
+      "dataset": "vctk"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "samples": [
+    {
+      "path": "datasets/dns4/datasets_fullband/noise_fullband/1GS26LFpoJg.wav",
+      "duration": 10.0,
+      "category": "noise_fullband"
+    },
+    {
+      "path": "datasets/dns4/datasets_fullband/noise_fullband/WzNyk1lja2M.wav",
+      "duration": 10.0,
+      "category": "noise_fullband"
+    },
+    {
+      "path": "datasets/ESC-50/audio/1-100032-A-0.wav",
+      "duration": 5.0,
+      "category": "esc50"
+    },
+    {
+      "path": "datasets/FreeSound/fan_Freesound_validated_62637_1.wav",
+      "duration": 10.0,
+      "category": "freesound"
+    }
+  ]
+}

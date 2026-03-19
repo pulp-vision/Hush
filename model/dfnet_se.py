@@ -129,8 +129,8 @@ def erb_fb(
 class ModelConfig:
     # DF params (16 kHz adaptation)
     sr: int = 16000
-    fft_size: int = 512
-    hop_size: int = 128
+    fft_size: int = 320
+    hop_size: int = 160
     nb_erb: int = 32
     nb_df: int = 64
     norm_tau: float = 1.0
