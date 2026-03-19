@@ -7,25 +7,26 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-yellow)](https://huggingface.co/weya-ai/hush)
 
 ---
 
 ## Built for Voice AI
 
-DeepFilterNet-SE is designed from the ground up for **Voice AI applications** — phone-based voice agents, call centre bots, voice assistants, real-time transcription pipelines, and conversational AI systems. These systems have a fundamentally different requirement from generic noise cancellation: they must isolate exactly one speaker from a live audio stream, in real time, under production conditions — from callers phoning in from traffic, kitchens, crowded restaurants, and places full of background talkers.
+Hush is designed from the ground up for **Voice AI applications** — phone-based voice agents, call centre bots, voice assistants, real-time transcription pipelines, and conversational AI systems. These systems have a fundamentally different requirement from generic noise cancellation: they must isolate exactly one speaker from a live audio stream, in real time, under production conditions — from callers phoning in from traffic, kitchens, crowded restaurants, and places full of background talkers.
 
 Every architectural choice — the training data mix, the auxiliary separation objective, the 16 kHz native sample rate, the fully causal design — exists to serve this use case.
 
 ### At a production glance
 
-| | |
-|---|---|
-| Model size | **8 MB** |
-| Runs on | **CPU only — no GPU required** |
-| Processing latency | **< 1 ms per 10 ms of audio** |
-| Algorithmic latency | ~20 ms (fully causal, zero lookahead) |
-| Training data | **10,000+ hours** of mixed speech, noise, and competing speakers |
-| Sample rate | 16 kHz (telephony-native: G.711, WebRTC, SIP) |
+|                     |                                                                  |
+| ------------------- | ---------------------------------------------------------------- |
+| Model size          | **8 MB**                                                         |
+| Runs on             | **CPU only — no GPU required**                                   |
+| Processing latency  | **< 1 ms per 10 ms of audio**                                    |
+| Algorithmic latency | ~20 ms (fully causal, zero lookahead)                            |
+| Training data       | **10,000+ hours** of mixed speech, noise, and competing speakers |
+| Sample rate         | 16 kHz (telephony-native: G.711, WebRTC, SIP)                    |
 
 The model processes each 10 ms audio frame in under 1 millisecond on a standard CPU core — meaning it adds no perceptible delay to live calls and leaves ample headroom for the rest of your pipeline.
 
@@ -44,15 +45,15 @@ Every major open-source speech enhancement model (DeepFilterNet3, RNNoise, SEGAN
 
 **There is no open-source model that explicitly trains for background speaker suppression.** This gap exists because the DNS and CHiME benchmarks that drive open-source development measure noise suppression, not speaker isolation. Models optimized for those benchmarks are not optimized for Voice AI.
 
-DeepFilterNet-SE is built to close that gap.
+Hush is built to close that gap.
 
 **A call with a noisy coffee machine is annoying. A call where a colleague in the background is being transcribed as part of the conversation breaks your entire Voice AI pipeline.**
 
 ---
 
-## What DeepFilterNet-SE Does Differently
+## What Hush Does Differently
 
-DeepFilterNet-SE is built on [DeepFilterNet3](https://github.com/Rikorose/DeepFilterNet) — a strong, causal, real-time speech enhancement architecture — and extends it with one targeted change: **teaching the encoder to distinguish speakers, not just speech from noise.**
+Hush is built on [DeepFilterNet3](https://github.com/Rikorose/DeepFilterNet) — a strong, causal, real-time speech enhancement architecture — and extends it with one targeted change: **teaching the encoder to distinguish speakers, not just speech from noise.**
 
 ### The core insight
 
@@ -78,20 +79,20 @@ At inference time, the Separation Head is discarded. Only the enhanced output pa
 
 ## Model at a Glance
 
-| Parameter | Value |
-|---|---|
-| Model size | **8 MB** |
-| CPU real-time | **Yes — no GPU required** |
-| Processing latency | **< 1 ms per 10 ms frame** |
-| Algorithmic latency | ~20 ms |
-| Lookahead | 0 (fully causal) |
-| Sample rate | 16,000 Hz |
-| Frame size / hop | 320 / 160 samples (10 ms) |
-| ERB bands | 32 |
-| DF bins | 64 (order-5 filter) |
-| Encoder dim | 256 |
-| Total parameters | ~1.8M |
-| Training data | 10,000+ hours |
+| Parameter           | Value                      |
+| ------------------- | -------------------------- |
+| Model size          | **8 MB**                   |
+| CPU real-time       | **Yes — no GPU required**  |
+| Processing latency  | **< 1 ms per 10 ms frame** |
+| Algorithmic latency | ~20 ms                     |
+| Lookahead           | 0 (fully causal)           |
+| Sample rate         | 16,000 Hz                  |
+| Frame size / hop    | 320 / 160 samples (10 ms)  |
+| ERB bands           | 32                         |
+| DF bins             | 64 (order-5 filter)        |
+| Encoder dim         | 256                        |
+| Total parameters    | ~1.8M                      |
+| Training data       | 10,000+ hours              |
 
 16 kHz is the native sample rate for telephony (G.711, WebRTC, SIP) and for most speech models (Whisper, wav2vec2, etc.). Targeting 16 kHz directly avoids the artifacts introduced by resampling from wideband models.
 
@@ -150,8 +151,8 @@ See [docs/architecture.md](docs/architecture.md) for full component details and 
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/deepfilternet-se.git
-cd deepfilternet-se
+git clone https://github.com/pulp-vision/Hush.git
+cd Hush
 pip install -r requirements.txt
 ```
 
@@ -162,6 +163,8 @@ pip install -e .
 ```
 
 **Dependencies:** Python 3.9+, PyTorch 2.0+, torchaudio 2.0+, numpy, soundfile, scipy, h5py
+
+Download the pretrained model weights from [🤗 Hugging Face](https://huggingface.co/weya-ai/hush).
 
 ---
 
@@ -220,7 +223,7 @@ frame_len = int(lib.weya_nc_get_frame_length(session))
 lib.weya_nc_process_frame(session, input_ptr, output_ptr)
 ```
 
-Prebuilt binaries are available for Linux, macOS (Apple Silicon), and Windows. Download them along with the ONNX model bundle from the [GitHub Releases](https://github.com/YOUR_USERNAME/deepfilternet-se/releases) page.
+Prebuilt binaries are available for Linux, macOS (Apple Silicon), and Windows. Download them along with the ONNX model bundle from the [GitHub Releases](https://github.com/pulp-vision/Hush/releases) page or from [🤗 Hugging Face](https://huggingface.co/weya-ai/hush).
 
 ### Real-Time Examples
 
@@ -275,15 +278,15 @@ python training/train.py \
 
 The released checkpoint was trained with the exact configuration in `configs/default.ini`. Key settings:
 
-| Setting | Value |
-|---|---|
-| Optimizer | AdamW, lr=5e-4 |
-| LR schedule | Cosine with 3-epoch warmup |
-| Epochs | 100 (early stop patience=25) |
-| Batch size | 16 |
-| Loss | MultiResSpecLoss (4 scales) + LocalSNRLoss + SeparationLoss |
-| Background speaker prob. | 60% of samples |
-| Background SIR range | 12–24 dB |
+| Setting                  | Value                                                       |
+| ------------------------ | ----------------------------------------------------------- |
+| Optimizer                | AdamW, lr=5e-4                                              |
+| LR schedule              | Cosine with 3-epoch warmup                                  |
+| Epochs                   | 100 (early stop patience=25)                                |
+| Batch size               | 16                                                          |
+| Loss                     | MultiResSpecLoss (4 scales) + LocalSNRLoss + SeparationLoss |
+| Background speaker prob. | 60% of samples                                              |
+| Background SIR range     | 12–24 dB                                                    |
 
 ---
 
@@ -291,12 +294,12 @@ The released checkpoint was trained with the exact configuration in `configs/def
 
 Training uses the [libdfdata](https://github.com/Rikorose/DeepFilterNet/tree/main/libDF) HDF5-backed dataloader. Data is organized in four categories:
 
-| Category | Role | Description |
-|---|---|---|
-| `train_speech` | Clean target | Primary speaker recordings |
-| `background_speech` | Interferer pool | Background human voices (speaker-disjoint from train_speech) |
-| `noise` | Noise augmentation | Environmental / background noise |
-| `rir` | Reverberation | Room impulse responses |
+| Category            | Role               | Description                                                  |
+| ------------------- | ------------------ | ------------------------------------------------------------ |
+| `train_speech`      | Clean target       | Primary speaker recordings                                   |
+| `background_speech` | Interferer pool    | Background human voices (speaker-disjoint from train_speech) |
+| `noise`             | Noise augmentation | Environmental / background noise                             |
+| `rir`               | Reverberation      | Room impulse responses                                       |
 
 Full instructions: [data/prepare_hdf5.md](data/prepare_hdf5.md)
 
@@ -307,7 +310,8 @@ Full instructions: [data/prepare_hdf5.md](data/prepare_hdf5.md)
 The model was trained on standard publicly available datasets totalling **over 10,000 hours of mixed audio** — clean speech, competing speakers, environmental noise, and room impulse responses. See [DATASETS.md](DATASETS.md) for the full list with links and licensing information.
 
 **Summary:**
-- **Speech**: LibriSpeech, VCTK, Common Voice (English)
+
+- **Speech**: LibriSpeech, VCTK, Common Voice
 - **Background speech**: LibriSpeech / VCTK (speaker-disjoint splits)
 - **Noise**: DNS Challenge, FreeSound, ESC-50
 - **RIRs**: MIT IR Survey, OpenAIR, BUT ReverbDB
@@ -317,7 +321,7 @@ The model was trained on standard publicly available datasets totalling **over 1
 ## Project Structure
 
 ```
-deepfilternet-se/
+hush/
 ├── model/
 │   ├── dfnet_se.py          # Full model: DfNetSE, DfNet, Encoder, ErbDecoder,
 │   │                        #   DfDecoder, SeparationHead
