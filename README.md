@@ -15,9 +15,13 @@
 
 ## Listen to the Model (Use headphones)
 
-[![Listen to Audio Demo](https://img.shields.io/badge/Listen%20to%20Demo-%E2%96%B6%20Play%20Audio-blue?style=for-the-badge)](https://pulp-vision.github.io/Hush/audio-demo.html)
+**Raw Audio (Noisy Environment):**
 
-Click the button above to open the interactive audio demo — play the raw noisy sample and the Hush-enhanced output side by side.
+https://github.com/user-attachments/files/26135104/sample_00006_raw.wav
+
+**Denoised Audio (Hush Output):**
+
+https://github.com/user-attachments/files/26135103/sample_00006_denoised.wav
 
 ---
 
@@ -382,6 +386,14 @@ hush/
 ├── setup.py
 └── LICENSE                  # Apache 2.0
 ```
+
+---
+
+## Known Limitations
+
+- **16 kHz only** — trained and evaluated at 16 kHz; other sample rates require resampling.
+- **Separation head is auxiliary** — the background speaker mask is an ERB-domain soft mask used for training regularisation, not a standalone source separation output.
+- **Background speakers at moderate SIR** — trained with background speakers at 12–24 dB SIR; very loud competing speakers may not be fully suppressed.
 
 ---
 
