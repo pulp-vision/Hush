@@ -17,11 +17,11 @@
 
 **Raw Audio (Noisy Environment):**
 
-<video src="https://raw.githubusercontent.com/pulp-vision/Hush/main/assets/audio/sample_00006_raw.mp4" controls width="640"></video>
+<video src="https://github.com/pulp-vision/Hush/releases/download/v1.0.0/sample_00006_raw.mp4" controls width="640"></video>
 
 **Denoised Audio (Hush Output):**
 
-<video src="https://raw.githubusercontent.com/pulp-vision/Hush/main/assets/audio/sample_00006_denoised.mp4" controls width="640"></video>
+<video src="https://github.com/pulp-vision/Hush/releases/download/v1.0.0/sample_00006_denoised.mp4" controls width="640"></video>
 
 ---
 
