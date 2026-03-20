@@ -15,9 +15,13 @@
 
 ## Listen to the Model (Use headphones)
 
-🔊 [**▶ Play Raw Audio (Noisy Environment)**](https://github.com/pulp-vision/Hush/blob/main/assets/audio/sample_00006_raw.mp4)
+**Raw Audio (Noisy Environment):**
 
-🔊 [**▶ Play Denoised Audio (Hush Output)**](https://github.com/pulp-vision/Hush/blob/main/assets/audio/sample_00006_denoised.mp4)
+https://github.com/pulp-vision/Hush/raw/main/assets/audio/sample_00006_raw.mp4
+
+**Denoised Audio (Hush Output):**
+
+https://github.com/pulp-vision/Hush/raw/main/assets/audio/sample_00006_denoised.mp4
 
 ---
 
