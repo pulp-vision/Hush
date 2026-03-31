@@ -1,0 +1,39 @@
+{
+  "df": {
+    "sr": 16000,
+    "fft_size": 320,
+    "hop_size": 160,
+    "nb_erb": 32,
+    "nb_df": 64,
+    "df_order": 5,
+    "df_lookahead": 0,
+    "norm_tau": 1.0,
+    "lsnr_max": 35,
+    "lsnr_min": -15,
+    "min_nb_freqs": 2
+  },
+  "model": {
+    "conv_lookahead": 0,
+    "conv_ch": 16,
+    "conv_depthwise": true,
+    "convt_depthwise": true,
+    "conv_kernel": [1, 3],
+    "convt_kernel": [1, 3],
+    "conv_kernel_inp": [3, 3],
+    "emb_hidden_dim": 256,
+    "emb_num_layers": 2,
+    "emb_gru_skip_enc": "none",
+    "emb_gru_skip": "none",
+    "df_hidden_dim": 256,
+    "df_gru_skip": "none",
+    "df_pathway_kernel_size_t": 1,
+    "enc_concat": false,
+    "df_num_layers": 3,
+    "df_n_iter": 1,
+    "lin_groups": 1,
+    "enc_lin_groups": 16,
+    "mask_pf": false,
+    "pf_beta": 0.02,
+    "lsnr_dropout": false
+  }
+}

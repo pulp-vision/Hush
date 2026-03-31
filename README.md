@@ -172,7 +172,7 @@ Or install as a package:
 pip install -e .
 ```
 
-**Dependencies:** Python 3.9+, PyTorch 2.0+, torchaudio 2.0+, numpy, soundfile, scipy, h5py
+**Dependencies:** Python 3.9+, PyTorch 2.0+, torchaudio 2.0+, numpy, soundfile, DeepFilterLib, scipy, h5py
 
 Download the pretrained model weights from [🤗 Hugging Face](https://huggingface.co/weya-ai/hush).
 
@@ -180,35 +180,70 @@ Download the pretrained model weights from [🤗 Hugging Face](https://huggingfa
 
 ## Quick Start: Inference
 
+> **Important:** PyTorch inference requires `DeepFilterLib` for correct feature extraction.
+> Install it with `pip install DeepFilterLib`.
+
+### Single File
+
+```bash
+python scripts/infer_single.py \
+    --checkpoint deployment/models/model_best.ckpt \
+    --input noisy_speech.wav \
+    --output enhanced.wav
+```
+
+Or use the Python API directly:
+
 ```python
 import torch
+import numpy as np
 import soundfile as sf
-from model.dfnet_se import DfNetSE, get_config
+from libdf import DF, erb, erb_norm, unit_norm
+from model.dfnet_se import DfNetSE, as_complex, as_real, get_config, get_norm_alpha
 
+# Load model
 config = get_config()
 model = DfNetSE(config)
-checkpoint = torch.load("checkpoints/model_best.ckpt", map_location="cpu")
+checkpoint = torch.load("deployment/models/model_best.ckpt", map_location="cpu")
 model.model.load_state_dict(checkpoint)
 model.eval()
 
+# Load audio
 audio, sr = sf.read("noisy_speech.wav")
 assert sr == 16000, "Input must be 16 kHz"
+wav = torch.tensor(audio, dtype=torch.float32).unsqueeze(0)  # [1, T]
 
-wav = torch.tensor(audio).float().unsqueeze(0).unsqueeze(0)  # [1, 1, T]
+# Feature extraction via libdf (must match training pipeline)
+df_state = DF(sr=16000, fft_size=320, hop_size=160, nb_bands=32, min_nb_erb_freqs=2)
+alpha = get_norm_alpha(16000, 160, config.norm_tau)
+wav_padded = torch.nn.functional.pad(wav, (0, 320))
+spec_np = df_state.analysis(wav_padded.numpy(), reset=True)
+erb_feat = torch.as_tensor(erb_norm(erb(spec_np, df_state.erb_widths()), alpha)).unsqueeze(1)
+spec_feat = as_real(torch.as_tensor(unit_norm(spec_np[..., :64], alpha))).unsqueeze(1)
+spec_t = as_real(torch.as_tensor(spec_np)).unsqueeze(1)
+
+# Enhance
 with torch.no_grad():
-    enhanced = model(wav)  # [1, 1, T]
+    spec_enh = model.model(spec_t.clone(), erb_feat, spec_feat)[0]
+    spec_enh_c = as_complex(spec_enh.squeeze(1))
 
-sf.write("enhanced.wav", enhanced.squeeze().numpy(), 16000)
+# Synthesize and compensate delay
+enh_np = df_state.synthesis(spec_enh_c.numpy(), reset=True)
+enh = torch.from_numpy(np.asarray(enh_np, dtype=np.float32))
+delay = 320 - 160  # fft_size - hop_size
+enh = enh[:, delay : len(audio) + delay]
+
+sf.write("enhanced.wav", enh.squeeze().numpy(), 16000)
 ```
 
 ### Batch Inference
 
 ```bash
 python scripts/infer_dfnet_batch.py \
-    --checkpoint checkpoints/model_best.ckpt \
-    --input-dir /path/to/noisy_wavs \
-    --output-dir /path/to/enhanced_wavs \
-    --sr 16000
+    --run-config configs/run_config.json \
+    --checkpoint deployment/models/model_best.ckpt \
+    --input /path/to/noisy_wavs \
+    --output-dir /path/to/enhanced_wavs
 ```
 
 ---
@@ -344,6 +379,7 @@ hush/
 │   ├── lr.py                # Cosine LR scheduler
 │   └── __init__.py
 ├── scripts/
+│   ├── infer_single.py              # Single-file inference (recommended)
 │   ├── infer_dfnet_batch.py         # Batch inference
 │   ├── compute_objective_metrics.py # SI-SDR, STOI, ESTOI evaluation
 │   └── create_simple_demo_dataset.py # Demo dataset creation
@@ -375,7 +411,8 @@ hush/
 │   ├── architecture.md      # Detailed architecture description
 │   └── architecture.png     # Architecture diagram
 ├── configs/
-│   └── default.ini          # Training config used for released checkpoint
+│   ├── default.ini          # Training config used for released checkpoint
+│   └── run_config.json      # Model config for batch inference script
 ├── DATASETS.md              # Dataset sources and licensing
 ├── GITHUB_RELEASE_NOTES.md  # v1.0.0 release notes
 ├── requirements.txt

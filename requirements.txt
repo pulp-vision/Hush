@@ -2,6 +2,7 @@ torch>=2.0.0
 torchaudio>=2.0.0
 numpy>=1.24.0
 soundfile>=0.12.1
+DeepFilterLib>=0.5.6
 scipy>=1.10.0
 h5py>=3.8.0
 tensorboard>=2.12.0
