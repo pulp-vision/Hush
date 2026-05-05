@@ -58,6 +58,11 @@ data/manifests_smoke/
 # huggingface
 huggingface
 
+# other folders
+kaggle_upload
+kaggle_model_upload
+
+
 # Config with secrets
 *.local.ini
 *.local.cfg
