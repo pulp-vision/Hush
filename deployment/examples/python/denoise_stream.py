@@ -91,22 +91,19 @@ async def run_server(args: argparse.Namespace) -> None:
         )
         sys.exit(1)
 
-    from weya_nc import WeyaNC
+    from weya_nc import WeyaModel, WeyaNC
 
-    # Validate that lib/model can be loaded once before accepting connections
-    probe = WeyaNC(
-        lib_path=args.lib,
-        model_path=args.model,
-        sample_rate=16000,
-        atten_lim_db=args.atten_lim_db,
-    )
+    # Load the ~8 MB model once and share it across every connection. Each
+    # connection still gets its own session; the wrapper serializes all native
+    # calls internally, so concurrent connections are safe.
+    model = WeyaModel(lib_path=args.lib, model_path=args.model)
+
+    probe = model.create_session(sample_rate=16000, atten_lim_db=args.atten_lim_db)
     frame_len = probe.frame_length
     probe.close()
 
     def nc_factory() -> WeyaNC:
-        return WeyaNC(
-            lib_path=args.lib,
-            model_path=args.model,
+        return model.create_session(
             sample_rate=16000,
             atten_lim_db=args.atten_lim_db,
         )

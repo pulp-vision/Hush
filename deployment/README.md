@@ -260,7 +260,36 @@ All functions are declared in [`include/weya_nc.h`](include/weya_nc.h).
 
 ### Threading
 
-Each `WeyaSession` is **not thread-safe** — use one session per thread. Multiple sessions can share one `WeyaModel` safely (the model is read-only after load).
+The library is **thread-safe across sessions.** Load the model once, then
+create one session per concurrent stream — sessions are fully independent and
+may be created, run, reset and freed from different threads **at the same time**,
+running in parallel across cores.
+
+The single rule: **one session is not reentrant — use one session per stream /
+thread.** Don't call `weya_nc_process_frame`/`weya_nc_reset` on the *same*
+session from two threads at once.
+
+```python
+from weya_nc import WeyaModel
+
+model = WeyaModel()                       # load the ~8 MB model once
+# one session per concurrent call/stream; run them on as many threads as you like
+nc = model.create_session(sample_rate=16000)
+clean = nc.process_frame(noisy_frame)
+```
+
+In C/C++: share one `WeyaModel*`, call `weya_nc_session_create` per stream, and
+keep each `WeyaSession*` on a single thread.
+
+> **History:** versions before this fix kept process-global mutable state and
+> crashed under concurrent use (`malloc(): unsorted double linked list
+> corrupted`, issue #5). The shipped libraries now give each session independent
+> state. A concurrency stress test lives in
+> [`examples/python/test_concurrency.py`](examples/python/test_concurrency.py):
+>
+> ```bash
+> python3 deployment/examples/python/test_concurrency.py
+> ```
 
 ---
 
