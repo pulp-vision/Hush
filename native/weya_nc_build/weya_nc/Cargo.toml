@@ -1,0 +1,52 @@
+[package]
+name = "weya_nc"
+version = "0.1.0"
+edition = "2021"
+description = "DeepFilterNet-based noise cancellation library for Vocalyst"
+license = "MIT"
+
+[lib]
+name = "weya_nc"
+crate-type = ["cdylib"]
+
+[dependencies]
+# DeepFilterNet - use v0.5.3 release tag (crate exports as 'df').
+# The vendored copy below has the stock 48 kHz DeepFilterNet3 model and its
+# `default-model`/`capi` features removed entirely, so NO model can be embedded in
+# the library — it runs only the fine-tuned bundle passed at runtime
+# (advanced_dfnet16k_model_best_onnx.tar.gz via weya_nc_model_load_from_path).
+df = { git = "https://github.com/Rikorose/DeepFilterNet.git", tag = "v0.5.3", package = "deep_filter", default-features = false, features = ["tract", "transforms"] }
+
+# ndarray for DfTract API
+ndarray = "0.15"
+
+# For safe C FFI
+libc = "0.2"
+
+# Logging
+log = "0.4"
+env_logger = "0.10"
+
+# Error handling
+anyhow = "1.0"
+
+# Use semver range for liquid-core
+liquid-core = "^0.26"
+# Constrain time to version compatible with current rustc (1.85)
+time = ">=0.3.0, <0.3.40"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.dev]
+opt-level = 1
+
+# Use a vendored copy of df v0.5.3 (rust/vendor/deep_filter) so we can apply the
+# shared-weights patch (Arc-shared model plans across sessions). Same v0.5.3
+# source -> identical inference; only cross-session weight sharing changes.
+[patch."https://github.com/Rikorose/DeepFilterNet.git"]
+deep_filter = { path = "../vendor/deep_filter" }
